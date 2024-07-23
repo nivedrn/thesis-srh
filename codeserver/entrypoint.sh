@@ -13,7 +13,7 @@ if [ "${DOCKER_USER-}" ]; then
     # nor can we bind mount $HOME into a new home as that requires a privileged container.
     sudo usermod --login "$DOCKER_USER" coder
     sudo groupmod -n "$DOCKER_USER" coder
-
+    
     sudo sed -i "/coder/d" /etc/sudoers.d/nopasswd
   fi
 fi
@@ -43,8 +43,22 @@ if [ "$FIRSTINIT" ]; then
         cd workspace
     fi
     chown -R coder:coder $HOME
+     ssh-keygen -t rsa -b 4096 -f /home/coder/.ssh/id_rsa -q -N ""
+
+    # Set permissions
+    chmod 600 /home/coder/.ssh/id_rsa
+    chmod 700 /home/coder/.ssh
+    chown coder:coder /home/coder/.ssh
+
+    # Add public key to authorized_keys
+    echo "Your public key is located at /home/coder/.ssh/id_rsa.pub"
+    cat /home/coder/.ssh/id_rsa.pub >> /home/coder/.ssh/authorized_keys
+    
+    sudo chmod 600 /etc/ssh/ssh_host_*_key
+    sudo chown coder:coder /etc/ssh/ssh_host_*_key
+
+    sudo chown coder:coder /run/
 fi
 
-exec dumb-init /usr/sbin/sshd "$@"
-exec dumb-init /usr/bin/code-server "$@"
-
+exec dumb-init /usr/bin/code-server --bind-addr 0.0.0.0:8080 . &
+/usr/sbin/sshd -D -e
