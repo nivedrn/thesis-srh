@@ -1,0 +1,25 @@
+
+services:
+  alpha:
+    build: .
+    image: code-server-nvd
+    restart: unless-stopped
+    ports:
+      - 8080:8080
+      - 8022:22
+    networks:
+      - alpha
+
+  beta:
+    build: .
+    image: code-server-nvd
+    restart: unless-stopped
+    ports:
+      - 8180:8080
+      - 8122:22
+    networks:
+      - beta    
+
+networks:
+  alpha:
+  beta:
