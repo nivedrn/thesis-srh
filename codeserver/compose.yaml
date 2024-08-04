@@ -1,14 +1,24 @@
-
 services:
-  sshd:
+  alpha:
     build: .
-    image: debian-ssh
+    image: code-server-nvd
     restart: unless-stopped
     ports:
-      - 8022:22
       - 8080:8080
+      - 8022:22
     networks:
-      - sshn
+      - alpha
+
+  beta:
+    build: .
+    image: code-server-nvd
+    restart: unless-stopped
+    ports:
+      - 8180:8080
+      - 8122:22
+    networks:
+      - beta    
 
 networks:
-  sshn:
+  alpha:
+  beta:

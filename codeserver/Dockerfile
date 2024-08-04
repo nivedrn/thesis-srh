@@ -3,7 +3,8 @@ FROM debian:bookworm
 ENV SHELL="/bin/bash"
 ENV CODER_UID=1000
 ENV CODER_GID=1000
-ENV SUDO_PASSWORD="secret123"
+ENV PASSWORD="secret123"
+ENV SUDO_PASSWORD=$PASSWORD
 ENV HOME="/home/coder"
 
 # timezone
@@ -53,6 +54,7 @@ EXPOSE 8080
 EXPOSE 22
 USER coder
 
+WORKDIR $HOME
 VOLUME [ "$HOME" ]
 ENTRYPOINT [ "/codeserver-setup.sh" ]
 

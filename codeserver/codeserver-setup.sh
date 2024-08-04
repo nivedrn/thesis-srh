@@ -28,5 +28,5 @@ if [ "$FIRSTINIT" ]; then
     chown -R coder:coder $HOME
 fi
 
-/usr/bin/code-server --bind-addr 0.0.0.0:8080 . &
+exec dumb-init /usr/bin/code-server --bind-addr 0.0.0.0:8080 . &
 /usr/sbin/sshd -D -e
