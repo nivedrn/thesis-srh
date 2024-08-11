@@ -6,6 +6,7 @@ ENV CODER_GID=1000
 ENV PASSWORD="secret123"
 ENV SUDO_PASSWORD=$PASSWORD
 ENV HOME="/home/coder"
+ENV COHESION_VERSION="0.0.2"
 
 # timezone
 RUN apt update && apt install -y \
@@ -43,7 +44,7 @@ RUN addgroup --gid $CODER_GID coder && \
     sudo chown coder:coder /etc/ssh/ssh_host_*_key && \
     sudo chown coder:coder /run/
 
-ADD cohesion-0.0.1.vsix /tmp/cohesion-0.0.1.vsix
+ADD cohesion-${COHESION_VERSION}.vsix /tmp/cohesion-${COHESION_VERSION}.vsix
 ADD codeserver-setup.sh /codeserver-setup.sh
 RUN chmod +x /codeserver-setup.sh
 ADD code-server_4.90.3_amd64.deb /tmp

@@ -2,7 +2,8 @@
     "name": "cohesion",
     "displayName": "Cohesion",
     "description": "An extension to enable collaboration between developers.",
-    "version": "0.0.1",
+    "version": "0.0.2",
+    "repository": "https://github.com/nivedrn/thesis-srh/tree/main/extension/cohesion",
     "engines": {
         "vscode": "^1.91.0"
     },

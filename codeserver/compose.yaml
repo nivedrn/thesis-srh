@@ -7,7 +7,7 @@ services:
       - 8080:8080
       - 8022:22
     networks:
-      - alpha
+      - intranet
 
   beta:
     build: .
@@ -17,8 +17,7 @@ services:
       - 8180:8080
       - 8122:22
     networks:
-      - beta    
+      - intranet    
 
 networks:
-  alpha:
-  beta:
+  intranet:

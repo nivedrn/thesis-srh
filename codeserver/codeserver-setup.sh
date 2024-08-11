@@ -16,8 +16,8 @@ if [ -s /tmp/cohesion-0.0.1.vsix ]; then
     # ${CSINST} anwar.papyrus-pdf --force
     # ${CSINST} tomoyukim.vscode-mermaid-editor --force
 
-    ${CSINST} /tmp/cohesion-0.0.1.vsix
-    sudo rm -f /tmp/cohesion-0.0.1.vsix
+    ${CSINST} /tmp/cohesion-${COHESION_VERSION}.vsix
+    sudo rm -f /tmp/cohesion-${COHESION_VERSION}.vsix
 fi
   
 if [ "$FIRSTINIT" ]; then
