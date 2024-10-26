@@ -11,7 +11,6 @@
         "Other"
     ],
     "activationEvents": [
-        "onFileSystem:memfs",
         "onCommand:vstodo.helloWorld"
     ],
     "main": "./dist/extension.js",
@@ -28,10 +27,21 @@
         "views": {
             "cohesion-sidebar-view": [
                 {
+                    "id": "cohesion-workspace",
+                    "name": "Workspace",
+                    "when": "sessionActive == true"
+                },
+                {
                     "type": "webview",
-                    "id": "cohesion-sidebar",
-                    "name": "Cohesion",
-                    "icon": "media/icon.svg"
+                    "id": "cohesion-session",
+                    "name": "Session Management"
+                },
+                {
+                    "type": "webview",
+                    "id": "cohesion-participants",
+                    "name": "Participants",
+                    "collapsed": false,
+                    "when": "sessionActive == true"
                 }
             ]
         },
@@ -40,57 +50,11 @@
                 "command": "cohesion.helloWorld",
                 "category": "Cohesion",
                 "title": "Hello World"
-            },
-            {
-				"command": "memfs.workspaceInit",
-				"title": "Setup Workspace",
-				"category": "MemFS"
-			},
-			{
-				"command": "memfs.init",
-				"title": "Create Files",
-				"category": "MemFS"
-			},
-			{
-				"command": "memfs.reset",
-				"title": "Delete Files",
-				"category": "MemFS"
-			},
-			{
-				"command": "memfs.deleteFile",
-				"title": "Delete \"file.txt\"",
-				"category": "MemFS"
-			},
-			{
-				"command": "memfs.addFile",
-				"title": "Add \"file.txt\"",
-				"category": "MemFS"
-			}
-		],
-		"menus": {
-			"commandPalette": [
-				{
-					"command": "memfs.init",
-					"when": "workbenchState == workspace"
-				},
-				{
-					"command": "memfs.reset",
-					"when": "workbenchState == workspace"
-				},
-				{
-					"command": "memfs.deleteFile",
-					"when": "workbenchState == workspace"
-				},
-				{
-					"command": "memfs.addFile",
-					"when": "workbenchState == workspace"
-				},
-				{
-					"command": "memfs.workspaceInit",
-					"when": "workbenchState != workspace"
-				}
-			]
-		}        
+            },{
+                "command": "cohesion-workspace.itemClicked",
+                "title": "Workspace Tree Item Clicked"
+            }
+        ]
     },
     "scripts": {
         "install:all": "npm install && cd webview-ui && npm install",

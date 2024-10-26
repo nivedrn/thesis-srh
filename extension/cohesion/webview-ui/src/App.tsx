@@ -1,80 +1,45 @@
-import { DefaultEventsMap } from '@socket.io/component-emitter';
-import './assets/css/App.css'
-import { io, Socket } from "socket.io-client";
 import { useEffect, useState } from 'react';
-import { nanoid } from 'nanoid';
-import { VSCodeButton } from '@vscode/webview-ui-toolkit/react';
-import { vscode } from './utilities/vscode';
+import './assets/css/App.css'
+import ParticipantsView from './views/ParticipantsView';
+import SessionView from './views/SessionView';
 
-let socket: Socket<DefaultEventsMap, DefaultEventsMap>;
+// Define the type for a participant
+export interface Participant {
+    id: number;
+    name: string;
+    color: string;
+}
 
 function App() {
-    const count = 555;
-    const [isLoading, setIsLoading] = useState(false);
+    const [viewId, setViewId] = useState('cohesion-session');
+    const [participants, setParticipants] = useState<Participant[]>([]);
 
     useEffect(() => {
-        console.log("Initialized View");
-        vscode.postMessage({
-            command: "ready",
-            text: "Yo Yo Yoooo"
+        const currentTitle = document.title;
+        setViewId(currentTitle);
+        console.log(`Initialized View: ${currentTitle}`);
+
+        window.addEventListener('message', event => {
+
+            const message = event.data;
+            console.log(message);
+
+            switch (message.type) {
+                case 'updateParticipants':
+                    setParticipants((prevParticipants) => [...prevParticipants, {
+                        id: Date.now(), 
+                        name: message.value,
+                        color: '#f3f3f3'
+                    }]);
+                    break;
+            }
         });
     }, []);
 
-    const initializeSocketConnection = async (sessionId: string) => {
-        try{
-
-            socket = io("http://localhost:5000", {
-                transports: ["websocket"],
-            });
-    
-            socket.emit("join-room", sessionId, () => {
-                console.log("Messenger joined room.");
-                vscode.postMessage({
-                    command: "onInfo",
-                    text: "Attempting to create socket room @ " + sessionId
-                });
-            });
-    
-            console.log("Joined Room: ", socket);
-        }catch(err){
-            console.log(err);
-        }
-        setIsLoading(false);
-    };
-
-    if (socket != undefined) {
-        socket.on("connect", () => {
-            console.log(`${socket.id}`);
-        });
-
-        socket.on("feedback", (message: string) => {
-            console.log(message);
-        });
-    }
-
-    const createSession = async () => {
-        setIsLoading(true);
-        const sessionId: string = nanoid();
-        console.log(sessionId);
-        vscode.postMessage({
-            command: "ready",
-            text: "Attempting to create socket room @ " + sessionId
-        });
-        initializeSocketConnection(sessionId);
-    };
-
-    if (socket != undefined) {
-        socket.on("connect", () => {
-            console.log(`${socket.id}`);
-        });
-    }
-
     return (
         <>
-            <div>
-                <a href="#">Test</a>Hello {count} {isLoading}
-                <VSCodeButton onClick={createSession}>Start Session</VSCodeButton>
-            </div>
+            {viewId === 'cohesion-session' && <SessionView />}
+            {viewId === 'cohesion-participants' && <ParticipantsView participants={participants} />}
         </>
     )
 }

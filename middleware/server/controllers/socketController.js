@@ -2,29 +2,29 @@ const redis = require("redis");
 
 const client = redis.createClient();
 
-async function storeRoomData(sessionId, roomData) {
+async function storeSessionData(sessionId, sessionData) {
 	try {
 		if (!client.isOpen) {
 			await client.connect();
 		}
-		const roomDataString = JSON.stringify(roomData);
-		await client.hSet(sessionId, "roomData", roomDataString);
+		const sessionDataString = JSON.stringify(sessionData);
+		await client.hSet(sessionId, "sessionData", sessionDataString);
 		console.log(`Room data stored for session ID: ${sessionId}`);
 	} catch (error) {
 		console.error("Error storing room data in Redis:", error);
 	}
 }
 
-async function retrieveRoomData(sessionId) {
+async function retrieveSessionData(sessionId) {
 	try {
 		if (!client.isOpen) {
 			await client.connect();
 		}
-		const roomDataString = await client.hGet(sessionId, "roomData");
+		const sessionDataString = await client.hGet(sessionId, "sessionData");
 
-		if (roomDataString !== null) {
-			const roomData = JSON.parse(roomDataString); // Parse JSON back to a JS object
-			return roomData;
+		if (sessionDataString !== null) {
+			const sessionData = JSON.parse(sessionDataString); // Parse JSON back to a JS object
+			return sessionData;
 		} else {
 			console.log(`No room data found for delivery ID: ${sessionId}`);
 			return null; // Indicate no data found
@@ -48,26 +48,26 @@ module.exports = (io) => {
 			});
 		});
 
-		socket.on("initiate-delivery", async (sessionId, deliveryData) => {
-			let roomData = await retrieveRoomData(sessionId);
+		socket.on("update-workspace", async (sessionId, workspaceData) => {
+			//let sessionData = await retrieveSessionData(sessionId);
+            console.log(workspaceData);
+			// if (!sessionData) {
+			// 	sessionData = {
+			// 		routeIndex: 0,
+			// 		pathIndex: 0,
+			// 		isDeliveryComplete: false,
+			// 		completedDeliveries: [],
+			// 	};
+			// 	await storesessionData(sessionId, sessionData);
+			// }
 
-			if (!roomData) {
-				roomData = {
-					routeIndex: 0,
-					pathIndex: 0,
-					isDeliveryComplete: false,
-					completedDeliveries: [],
-				};
-				await storeRoomData(sessionId, roomData);
-			}
-
-			if (roomData) {
-				console.log(roomData);
-			} else {
-				console.error(
-					`Error: Delivery ID ${sessionId} not found in room data.`
-				);
-			}
+			// if (sessionData) {
+			// 	console.log(sessionData);
+			// } else {
+			// 	console.error(
+			// 		`Error: Delivery ID ${sessionId} not found in room data.`
+			// 	);
+			// }
 		});
 
 		socket.on("disconnecting", () => {
